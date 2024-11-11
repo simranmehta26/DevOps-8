@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     bat 'docker --version' // Check if Docker is accessible
-                    bat 'docker build -t my-python-app .' // Build Docker image
+                    bat 'docker build -t mera-python-app .' // Build Docker image
                 }
             }
         }
@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     // Deploy Docker container to your environment
-                    bat 'docker run -d -p 5000:5000 my-python-app'  // Adjust as necessary
+                    bat 'docker run -d -p 5000:5000 mera-python-app'  // Adjust as necessary
                 }
             }
         }
