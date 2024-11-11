@@ -1,48 +1,37 @@
-// Jenkinsfile
 pipeline {
     agent any
     stages {
         stage('Checkout') {
             steps {
                 // Pull code from your Git repository
-                git 'https://github.com/your-username/my-python-app.git'
+                git branch: 'main', url: 'https://github.com/yash08123/DevOps-8.git'
             }
         }
 
         stage('Build') {
             steps {
                 script {
-                    // Build Docker image
-                    sh 'docker build -t my-python-app .'
-                }
-            }
-        }
-
-        stage('Test') {
-            steps {
-                script {
-                    // Run unit tests (if any are available)
-                    sh 'python -m unittest discover -s src/tests'
+                    bat 'docker --version' // Check if Docker is accessible
+                    bat 'docker build -t my-python-app .' // Build Docker image
                 }
             }
         }
 
         stage('Deploy to Container') {
             steps {
-                deploy adapters: [
-                    tomcat9(credentialsId: 'your-credentials-id', 
-                            path: '', 
-                            url: 'http://localhost:8081/')
-                ],
-                contextPath: 'my-python-app',
-                war: 'target/my-python-app.war'
+                script {
+                    // Deploy Docker container to your environment
+                    bat 'docker run -d -p 5000:5000 my-python-app'  // Adjust as necessary
+                }
             }
         }
     }
+
     post {
         always {
-            archiveArtifacts artifacts: 'target/*.war', allowEmptyArchive: true
-            junit 'target/test-results/*.xml'
+            // Adjust artifact archiving to something relevant (e.g., logs, build output)
+            archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true  // Archive logs or other relevant files
+            
         }
         success {
             echo 'Deployment successful!'
